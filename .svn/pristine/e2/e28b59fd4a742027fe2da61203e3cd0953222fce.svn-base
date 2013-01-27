@@ -1,0 +1,233 @@
+package com.setecs.android.mpos.provider;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.setecs.android.mpos.Employees;
+import com.setecs.android.mpos.objects.MenuItem;
+import com.setecs.android.mpos.objects.Order;
+
+public class DatabaseHelper extends SQLiteOpenHelper {
+
+	private static final String DATABASE_NAME = "mpos.db";
+	private static final int DATABASE_VERSION = 23;
+
+	public static final String CATEGORIES_TABLE_NAME = "categories"; //--------Table Categories-----------
+	public static final String MENU_TABLE_NAME = "menu"; //-------------Table menu -------------------
+	public static final String FKI_MenuItemCategory_TRIGGER ="fki_MenuItemCategoryID";
+	public static final String FKD_CategoryID = "fkd_CategoryID";
+	public static final String ORDER_TABLE_NAME = "menu_order"; //-------- Order table ---------
+	public static final String ORDER_ITEMS_TABLE_NAME = "order_items"; //---- Order items table ----------
+	
+	public static final String PERSONNEL_TABLE_NAME = "p_registration";//---------Employee registration table-----
+	
+	public static final String PERSONNEL_TABLE_ROLE = "p_Role"; //------------- Employee Role table ----------
+	static final String colempRoleID="proleid"; //--------emprole table row-----------
+	public static final String colempRoleName="prolename"; //----emprole table row-------
+
+	private static final String TAG = "DatabaseHelper";
+	
+	static final String viewEmps="ViewEmps";
+
+	public DatabaseHelper(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	}
+	@Override
+	public void onOpen(SQLiteDatabase db){
+		super.onOpen(db);
+		if (!db.isReadOnly()){
+			db.execSQL("PRAGMA foreign_keys=ON;");
+		}
+	}
+	
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		Log.w(TAG, "Creating new database.");
+		// create table categories
+		db.execSQL("CREATE TABLE " + CATEGORIES_TABLE_NAME + " ("
+				+ MenuCategory.Categories.CATEGORY_ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ MenuCategory.Categories.CATEGORY_NAME + " TEXT NULL" + ");");
+
+		// create table menu
+		db.execSQL("CREATE TABLE " + MENU_TABLE_NAME + " ("
+				+ MenuItem.MenuColumns.MENU_ITEM_ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ MenuItem.MenuColumns.MENU_ITEM_NAME + " TEXT NULL, "				
+				+ MenuItem.MenuColumns.MENU_ITEM_PRICE + " TEXT NULL, " 
+				+ MenuItem.MenuColumns.MENU_ITEM_DESCRIPTION + " TEXT NULL, "
+				+ MenuItem.MenuColumns.MENU_ITEM_CATEGORY_ID + " INTEGER NOT NULL, "
+				+ "FOREIGN KEY (" 
+				+ MenuItem.MenuColumns.MENU_ITEM_CATEGORY_ID 
+				+ ") REFERENCES "  
+				+ CATEGORIES_TABLE_NAME + "(" + MenuCategory.Categories.CATEGORY_ID + ")" 
+				+	"ON DELETE CASCADE" +	");");
+					
+		// Create INSERT (fki) Trigger
+		db.execSQL("CREATE TRIGGER fki_MenuItemCategoryID " +
+				" BEFORE INSERT "+
+				" ON "+MENU_TABLE_NAME+
+				
+				" FOR EACH ROW BEGIN"+
+				" SELECT CASE WHEN ((SELECT "+ MenuCategory.Categories.CATEGORY_ID +
+				" FROM "+ CATEGORIES_TABLE_NAME +" WHERE "+ MenuCategory.Categories.CATEGORY_ID +
+				"=new."+MenuItem.MenuColumns.MENU_ITEM_CATEGORY_ID+" ) IS NULL)"+
+				" THEN RAISE (ABORT,'Foreign Key Violation') END;"+
+				"  END;");
+		
+		// Create Delete (fkd) Trigger
+		/*db.execSQL("CREATE TRIGGER fkd_CategoryID " +
+				" BEFORE DELETE "+
+				" ON "+CATEGORIES_TABLE_NAME +
+				
+				" FOR EACH ROW BEGIN "+
+				" SELECT CASE WHEN ((SELECT "+ MenuItem.MenuColumns.MENU_ITEM_CATEGORY_ID +
+				" FROM "+ MENU_TABLE_NAME +" WHERE "+ MenuItem.MenuColumns.MENU_ITEM_CATEGORY_ID +
+				"=old."+MenuCategory.Categories.CATEGORY_ID+" ) IS NOT NULL)"+
+				" THEN RAISE (ROLLBACK,'Foreign Key Violation') END;"+
+				"  END;");
+		// Create Update (fku) Trigger
+		db.execSQL("CREATE TRIGGER fku_MenuItemCategoryID " +
+				" BEFORE UPDATE "+
+				" ON "+MENU_TABLE_NAME+
+				
+				" FOR EACH ROW BEGIN"+
+				" SELECT CASE WHEN ((SELECT "+ MenuCategory.Categories.CATEGORY_ID +
+				" FROM "+ CATEGORIES_TABLE_NAME +" WHERE "+ MenuCategory.Categories.CATEGORY_ID +
+				"=new."+MenuCategory.Categories.CATEGORY_NAME+" ) IS NULL)"+
+				" THEN RAISE (ABORT,'Foreign Key Violation') END;"+
+				"  END;"); */
+		//--------------------------------End of operations in Category and menu item tables-------
+		// Create order table
+		db.execSQL("CREATE TABLE " + ORDER_TABLE_NAME + " ("
+				+ Order.OrderColumns.ORDER_ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ Order.OrderColumns.ORDER_ITEMS_ID + " TEXT NULL" + ");");
+
+		// create table order items
+		db.execSQL("CREATE TABLE " + ORDER_ITEMS_TABLE_NAME + " ("
+				+ MenuItem.MenuColumns.MENU_ITEM_ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ Order.OrderColumns.ORDER_ITEMS_ID + " TEXT NULL, "
+				+ MenuItem.MenuColumns.MENU_ITEM_CATEGORY_ID + " TEXT NULL, "
+				+ MenuItem.MenuColumns.MENU_ITEM_NAME + " TEXT NULL, "
+				+ MenuItem.MenuColumns.MENU_ITEM_DESCRIPTION + " TEXT NULL, "
+				+ MenuItem.MenuColumns.MENU_ITEM_PRICE + " TEXT NULL" + ");");
+
+		// create table personnel registration
+		db.execSQL("CREATE TABLE " + PERSONNEL_TABLE_NAME + " ("
+				+ PersonnelRegister.PRegistration.REGISTRATION_ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ PersonnelRegister.PRegistration.P_FNAME + " TEXT NULL, "				
+				+ PersonnelRegister.PRegistration.P_ROLE + " INTEGER, "
+				+ PersonnelRegister.PRegistration.P_PIN + " TEXT NULL, "
+				+ PersonnelRegister.PRegistration.P_MNO + " TEXT NULL, "
+				+ PersonnelRegister.PRegistration.P_EMAIL + " TEXT NULL" + ");");
+				/*+ "FOREIGN KEY (" 
+				+ PersonnelRegister.PRegistration.P_ROLE 
+				+ ") REFERENCES "  
+				+ PERSONNEL_TABLE_ROLE + "(" + colempRoleID + "));");*/
+		
+		//colDept+" INTEGER NOT NULL ,FOREIGN KEY ("+
+	    //colDept+") REFERENCES "+deptTable+" ("+colDeptID+"));");
+		
+		//--- Create table for personnel Role (Manager, BarMan/Maid, Waiter/Waitersses
+	/*	db.execSQL("CREATE TABLE "+PERSONNEL_TABLE_ROLE + "("
+				+ colempRoleID+ " INTEGER PRIMARY KEY , "
+				+ colempRoleName + " TEXT NULL" + ");");	*/
+		
+		//---View for whole data---------------------------------------------
+	/*	db.execSQL("CREATE VIEW "+viewEmps+
+				" AS SELECT "+PERSONNEL_TABLE_NAME+"."+PersonnelRegister.PRegistration.REGISTRATION_ID+" AS _id,"+
+				" "+PERSONNEL_TABLE_NAME+"."+PersonnelRegister.PRegistration.P_FNAME+","+
+				" "+PERSONNEL_TABLE_NAME+"."+PersonnelRegister.PRegistration.P_ROLE+","+
+				" "+PERSONNEL_TABLE_ROLE+"."+colempRoleName+""+
+				" FROM "+PERSONNEL_TABLE_NAME+" JOIN "+PERSONNEL_TABLE_ROLE+
+				" ON "+PERSONNEL_TABLE_NAME+"."+PersonnelRegister.PRegistration.P_ROLE+" ="+PERSONNEL_TABLE_ROLE+"."+colempRoleID
+				);*/
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
+				+ newVersion + ", which will destroy all old data");
+
+		db.execSQL("DROP TABLE IF EXISTS " + CATEGORIES_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + MENU_TABLE_NAME);
+		db.execSQL("DROP TRIGGER IF EXISTS " + FKI_MenuItemCategory_TRIGGER);
+		//db.execSQL("DROP TRIGGER IF EXISTS " + FKD_CategoryID);
+		db.execSQL("DROP TABLE IF EXISTS " + ORDER_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + ORDER_ITEMS_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + PERSONNEL_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + PERSONNEL_TABLE_ROLE);
+		
+		onCreate(db);
+	}
+
+	//-------------------------------------------------------------------
+	public Cursor getAllempRole()
+	 {
+		 SQLiteDatabase db=this.getReadableDatabase();
+		 Cursor cur=db.rawQuery("SELECT "+colempRoleID+" as _id, "+colempRoleName+" from "+ PERSONNEL_TABLE_ROLE ,new String [] {});
+		 
+		 return cur;
+	 }
+	
+	public void DeleteEmp(Employees emp)
+	 {
+		 SQLiteDatabase db=this.getWritableDatabase();
+		 db.delete(PERSONNEL_TABLE_NAME,PersonnelRegister.PRegistration.REGISTRATION_ID
+				  +"=?", new String [] {String.valueOf(emp.getID())});
+		 db.close();		 		
+	 }
+	
+	public int UpdateEmp(Employees emp)
+	 {
+		 SQLiteDatabase db=this.getWritableDatabase();
+		 ContentValues cv=new ContentValues();
+		 cv.put(PersonnelRegister.PRegistration.P_FNAME, emp.getName());
+		 cv.put(PersonnelRegister.PRegistration.P_ROLE, emp.getRole());
+		 //cv.put(PersonnelRegister.PRegistration.P_PIN, emp.g)
+		 //cv.put(colDept, emp.getDept());
+		 return db.update(PERSONNEL_TABLE_NAME, cv, PersonnelRegister.PRegistration.REGISTRATION_ID
+				 +"=?", new String []{String.valueOf(emp.getID())});
+		 
+	 }
+//-----------------------------------------------------------
+	public int GetCategoryID(String CategoryName)
+	  {
+	   SQLiteDatabase db=this.getReadableDatabase();
+	   Cursor c=db.query(CATEGORIES_TABLE_NAME, new String[]{MenuCategory.Categories.CATEGORY_ID+" as _id",
+			   												 MenuCategory.Categories.CATEGORY_NAME},
+			   												MenuCategory.Categories.CATEGORY_NAME+"=?",
+			   												new String[]{CategoryName}, null, null, null);
+	   
+	   c.moveToFirst();
+	   return c.getInt(c.getColumnIndex("_id"));  
+	  }
+	
+	 public String GetEmpRole(int ID)
+	 {
+		 SQLiteDatabase db=this.getReadableDatabase();
+		 
+		 String[] params=new String[]{String.valueOf(ID)};
+		 Cursor c= db.rawQuery("SELECT "+colempRoleName+" FROM"+ PERSONNEL_TABLE_ROLE+" WHERE "+colempRoleID+"=?",params);
+		 c.moveToFirst();
+		 int index= c.getColumnIndex(colempRoleName);
+		 return c.getString(index);
+	 }
+	 
+	 public Cursor getEmpByRole(String Role)
+	 {
+		 SQLiteDatabase db=this.getReadableDatabase();
+		 String [] columns = new String[]{"_id",PersonnelRegister.PRegistration.P_FNAME,
+				 PersonnelRegister.PRegistration.P_ROLE, PersonnelRegister.PRegistration.P_PIN,
+				 PersonnelRegister.PRegistration.P_MNO, PersonnelRegister.PRegistration.P_EMAIL};
+		 Cursor c=db.query(viewEmps, columns, colempRoleName+"=?", new String[]{Role}, null, null, null);
+		 return c;
+	 }
+}

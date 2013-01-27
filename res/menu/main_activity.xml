@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:android1="https://schemas.android.com/apk/res/android"   >
+   
+    <item android:id="@+id/menu_login"
+          android:icon="@drawable/personnel_man"
+          android:title="@string/menu_login"
+          android:onClick="onLoginMenuClick"                            
+          android:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/menu_orders"
+          android:icon="@drawable/mobile_pos_orders"
+          android:title="@string/menu_orders"
+          android:onClick="onOrderMenuClick"                            
+          android:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/menu_inventory"
+          android:icon="@drawable/mobile_pos_inventory"
+          android:title="@string/menu_inventory"          
+          android:showAsAction="ifRoom|withText"
+          android:onClick="onInventoryMenuClick" />
+    <item android:id="@+id/menu_admin"
+          android:icon="@drawable/mobile_pos_administration"
+          android:title="@string/menu_admin"          
+          android:showAsAction="ifRoom|withText"          
+          android:onClick="onAdministrationMenuClick" />
+    
+    <item android:id="@+id/menuid_exit"
+          android:icon="@drawable/system_exit"
+          android:title="@string/menu_exit"          
+          android:showAsAction="ifRoom|withText"          
+          android:onClick="onExitMenuClick" />	
+</menu>

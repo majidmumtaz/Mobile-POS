@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="hello">Hello World, HomeActivity!</string>
+    <string name="app_name">Mobile POS Station</string>
+    <string name="total">Total: $ 2.00</string>
+    <string name="MPosDatabase_onCreate">"
+CREATE TABLE categories (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NULL);
+CREATE TABLE menu (_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT NULL, name TEXT NULL, description TEXT NULL, price TEXT NULL);
+CREATE TABLE p_registration (_id INTEGER PRIMARY KEY AUTOINCREMENT, fname TEXT NULL, emproleid INTEGER, pin TEXT NULL, mobileno TEXT NULL, emailaddress TEXT NULL);
+CREATE TABLE emp_Role (emproleid INTEGER PRIMARY KEY, emprolename TEXT NULL);  
+INSERT INTO categories (_id , name) VALUES (NULL, 'Drinks');
+INSERT INTO categories (_id , name) VALUES (NULL, 'Food');
+INSERT INTO menu (_id , category, name, description, price) VALUES (NULL, 'Drinks', 'Wine', 'Wine', '70');
+INSERT INTO menu (_id , category, name, description, price) VALUES (NULL, 'Drinks', 'Beer', 'Beer', '50');
+INSERT INTO menu (_id , category, name, description, price) VALUES (NULL, 'Food', 'Main Dish', 'Main Dish', '150');
+INSERT INTO menu (_id , category, name, description, price) VALUES (NULL, 'Food', 'Dessert', 'Dessert', '80');
+INSERT INTO p_registration (_id, fname, emproleid, pin, mobileno, emailaddress) VALUES (NULL, 'Sead Muftic', 1, '1111', '1235', 'seadm@kth.se');
+INSERT INTO p_Role (emproleid, emprolename) VALUES (1, 'Manager');
+"</string>
+    <string name="MPosDatabase_onUpgrade">"
+DROP TABLE IF EXISTS categories
+DROP TABLE IF EXISTS menu
+DROP TABLE IF EXISTS p_registration
+DROP TABLE IF EXISTS p_Role
+"</string>
+    <string name="category">Category</string>
+    <string name="personnel">Personnel</string>
+    <string name="none">None</string>
+    <string name="add_category">Add Category</string>
+    <string name="add_personnel">Register Personnel</string>
+    <string name="add_menu">Add Menu</string>
+    <string name="menu">Menu Items</string>
+    <string name="personalmenu">Personnel Detail</string>
+    <string name="personalfname">Full Name</string>
+    <string name="personalpassword">Password</string>
+    <string name="personalmobileno">Mobile Number</string>
+    <string name="personalemailaddress">Email Address</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="order">Order</string>
+    <string name="category_name">Category Name</string>
+    <string name="name">Name</string>
+    <string name="price">Price</string>
+    <string name="pay">Pay</string>
+    <string name="save">Save</string>
+    <string name="swipe_card">Swipe Card</string>
+    <string name="description">Description</string>
+    <string name="menu_admin">Manager</string>
+    <string name="menu_inventory">Services</string>
+    <string name="menu_orders">Orders</string>
+    <string name="menu_exit">Exit</string>
+    <string name="menu_details">Menu Details</string>
+    <string name="menu_edit">Update</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_login">Login</string>
+    <string name="cat_description">Category</string>
+    <string name="menu_description">Menu Items</string>
+    <string name="order_description">Personnel</string>
+    <string name="title_bar">Title</string>
+    <string name="radio_male">Male</string>
+    <string name="radio_female">FeMale</string>
+    <string-array name="menu_categories">
+        <item>Drinks</item>
+        <item>Starters</item>
+        <item>Mains</item>
+    </string-array>
+    <string-array name="personnel_role">
+        <item>Select Personnel Role</item>
+        <item>Manager</item>
+        <item>Waiter</item>
+        <item>Waitress</item>
+        <item>BarMan</item>
+        <item>BarMaid</item>
+    </string-array>
+    <string name="register_admin">Register Admin</string>
+</resources>

@@ -1,0 +1,7 @@
+#Wed Nov 28 15:36:49 CET 2012
+synch_info/contigous=true
+eclipse.preferences.version=1
+repositories/801d8baf4639001217cc8dbea0212872=801d8baf4639001217cc8dbea0212872;https\://seclab.svn.ict.kth.se/seclab/android/branches/majid;https\://seclab.svn.ict.kth.se/seclab/android/branches/majid;branches;tags;trunk;true;;;;false;<https\://seclab.svn.ict.kth.se\:443>;;0
+externalMigrateFromAuthorizationDatabase/isMigrated=true
+repositories/50e1b7e6cd37001210ffc01a5c36ea62=50e1b7e6cd37001210ffc01a5c36ea62;https\://seclab.svn.ict.kth.se/seclab/android/majid/;https\://seclab.svn.ict.kth.se/seclab/android/majid/;branches;tags;trunk;true;;;;false;<https\://seclab.svn.ict.kth.se\:443>;;0
+migrateFromAuthorizationDatabase/isMigrated=true

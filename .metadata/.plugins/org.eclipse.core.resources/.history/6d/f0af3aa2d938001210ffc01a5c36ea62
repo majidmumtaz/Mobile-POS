@@ -1,0 +1,130 @@
+package com.setecs.android.mpos.fragments;
+
+import com.setecs.android.mpos.R;
+import com.setecs.android.mpos.fragments.CategoryFragment.OnCategorySelectedListener;
+import com.setecs.android.mpos.provider.PersonnelRegister;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+
+public class ModifyPersonnelDetail extends DialogFragment {
+	
+	String sID, fNamee, pGender, pRole, pPIN, pMNo, pEmail;
+	
+	public static ModifyPersonnelDetail newInstance(String strID, String fName, String pGender,
+			String pRole, String pPIN, String pMNo, String pEmail){
+		
+		ModifyPersonnelDetail frag = new ModifyPersonnelDetail();
+		frag.sID = strID;
+		frag.fNamee= fName;
+		frag.pGender = pGender;
+		frag.pRole=pRole;
+		frag.pPIN=pPIN;
+		frag.pMNo=pMNo;
+		frag.pEmail=pEmail;
+		
+		return frag;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+	}
+	
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		final View  v = inflater.inflate(R.layout.personnel_detail, null);
+		final EditText personnelFNameEditText = (EditText) v
+	 					.findViewById(R.id.personnel_txtbfname);
+		final RadioGroup radioSexGroup = (RadioGroup) v
+						.findViewById(R.id.radioSex);
+		// get selected radio button from radioGroup
+		int selectedId = radioSexGroup.getCheckedRadioButtonId();
+		final RadioButton radioSexButton = (RadioButton) v
+						.findViewById(selectedId);
+		final Spinner personnelRoleSpinner = (Spinner) v
+	 					.findViewById(R.id.personnelRoleSpinner);
+		final EditText personnelPinEditText = (EditText) v
+	 					.findViewById(R.id.personnel_txtbpin);
+		final EditText personnelMnoEditText = (EditText) v
+	 					.findViewById(R.id.personnel_txtbmobileno);
+		final EditText personnelemailEditText = (EditText) v
+	 					.findViewById(R.id.personnel_txtbemailaddress);
+	 
+	 	personnelFNameEditText.setText(fNamee);
+		//personnelRoleSpinner.((pRole));
+	 	@SuppressWarnings({ "rawtypes", "unchecked" })
+		ArrayAdapter<String> myAdap = (ArrayAdapter) personnelRoleSpinner.getAdapter(); //cast to an ArrayAdapter
+	 	int spinnerPosition = myAdap.getPosition(pRole);
+	 	//set the default according to value
+	 	personnelRoleSpinner.setSelection(spinnerPosition);
+		//personnelRoleSpinner.setSelection(((ArrayAdapter<String>)personnelRoleSpinner.getAdapter()).getPosition(pRole));
+		personnelPinEditText.setText(pPIN);
+		personnelMnoEditText.setText(pMNo);
+		personnelemailEditText.setText(pEmail);
+		return new AlertDialog.Builder(getActivity())
+				.setTitle("Modify Personnel Detail")
+				.setView(v)
+				.setCancelable(true)
+				.setNegativeButton("Modify",
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								 
+								//EditDialogListner activity = (EditDialogListner) getActivity();
+					           /* activity.modifyPersonnelDetail(sID, personnelFNameEditText.getText().toString(),											
+										personnelRoleSpinner.getSelectedItem().toString(),
+										personnelPinEditText.getText().toString(),
+										personnelMnoEditText.getText().toString(),
+										personnelemailEditText.getText().toString()
+					            );*/					            
+					             
+								if (!(personnelFNameEditText.getText().toString()
+										.equals("")&&																				
+										personnelPinEditText.getText().toString()
+										.equals("") &&
+										personnelMnoEditText.getText().toString()
+										.equals("") ||
+										personnelemailEditText.getText().toString()
+										.equals(""))
+									) {	
+									
+									ContentValues values = new ContentValues();
+						    		values.put(PersonnelRegister.PRegistration.P_FNAME, 
+						    				personnelFNameEditText.getText().toString());		
+						    		values.put(PersonnelRegister.PRegistration.P_ROLE, 
+						    				personnelRoleSpinner.getSelectedItem().toString());
+						    		values.put(PersonnelRegister.PRegistration.P_PIN, 
+						    				personnelPinEditText.getText().toString());
+						    		values.put(PersonnelRegister.PRegistration.P_MNO, 
+						    				personnelMnoEditText.getText().toString());
+						    		values.put(PersonnelRegister.PRegistration.P_EMAIL, 
+						    				personnelemailEditText.getText().toString());
+
+						    		getActivity().getContentResolver().update(
+						    				PersonnelRegister.PRegistration.CONTENT_URI.buildUpon()
+						    				.appendPath(String.valueOf(sID)).build(), values, null, null);
+								}
+								dismiss();
+							}
+						}).setPositiveButton("Cancel", null).create();
+	}
+	
+	
+	
+}

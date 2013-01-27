@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
+    android:background="?android:attr/activatedBackgroundIndicator" >
+    
+    <!--  <CheckBox android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"        
+         /> -->
+    <LinearLayout
+	    android:id="@+id/thumbnail_image"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"	    
+	    android:layout_marginRight="5dip"
+	    android:background="@drawable/image_bg"
+	    android:padding="3dip" >
+        
+		<ImageView     
+			android:id="@+id/list_pimage"   
+	        android:layout_width="50dip"
+	        android:layout_height="50dip"
+	        android:src="@drawable/ic_launcher"
+	        android:contentDescription="personnel thumbnail"
+	        />
+        
+	</LinearLayout>
+	<CheckBox android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical" 
+        android:button="ad"       
+         />
+    <TextView
+        android:id="@+id/personel_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/NormalText" />
+    
+    
+
+</LinearLayout>

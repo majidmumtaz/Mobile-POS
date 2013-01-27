@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"    
+    android:padding="5dp"    
+    android:background="@drawable/list_selector"
+    android:gravity="top|left"
+     >
+    
+    <!--  <CheckBox android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="?android:attr/activatedBackgroundIndicator"        
+         /> -->
+    <LinearLayout
+	    android:id="@+id/thumbnail_image"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"	    
+	    android:layout_marginRight="5dip"
+	    android:layout_alignParentLeft="true"
+	    android:background="@drawable/image_bg"
+	    android:padding="3dip" >
+        
+		<ImageView     
+			android:id="@+id/list_pimage"   
+	        android:layout_width="35dip"
+	        android:layout_height="35dip"
+	        android:src="@drawable/personnel_woman"
+	        android:contentDescription="personnel thumbnail"
+	        />
+        
+	</LinearLayout>
+	
+    <TextView
+        android:id="@+id/personel_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/thumbnail_image"
+        android:layout_toRightOf="@+id/thumbnail_image"
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="20dip"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/personel_role"
+		android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/personel_name"
+        android:layout_marginTop="1dip"
+        android:layout_toRightOf="@+id/thumbnail_image"        
+        android:textColor="#040404"
+        android:typeface="sans" /> 
+        
+        <CheckBox android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"               
+        android:layout_alignParentRight="true"
+     	android:layout_centerVertical="true"     	
+     	
+     	android:button="@xml/custom_checkbox"       
+         />   
+
+</RelativeLayout>

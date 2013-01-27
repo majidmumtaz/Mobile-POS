@@ -1,0 +1,20 @@
+package com.example.mposadmin;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.Menu;
+
+public class Admin_Panel extends Activity {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_admin__panel);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_admin__panel, menu);
+        return true;
+    }
+}

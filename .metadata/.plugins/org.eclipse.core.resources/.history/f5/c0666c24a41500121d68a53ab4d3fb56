@@ -1,0 +1,5 @@
+package com.setecs.android.mposadmin.fragments;
+
+public class AdminCategory {
+
+}

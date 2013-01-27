@@ -1,0 +1,384 @@
+package com.setecs.android.mpos.fragments;
+
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.ActionMode;
+import android.view.InflateException;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+
+import com.setecs.android.mpos.R;
+import com.setecs.android.mpos.provider.PersonnelRegister;
+
+public class PersonnelListFragment extends Fragment {
+
+	private SimpleCursorAdapter mAdapter;
+	OnPersonnelSelectedListener mCallback;
+	
+	private ActionMode mActionMode;
+	protected LinearLayout btnlayout;
+	protected Button addPersonnel, updatePersonnel, deletePersonnel;
+	private int chosenId = 0;
+
+	public void onCreate(Bundle state) {
+		super.onCreate(state);
+	}
+	
+	// Container Activity must implement this interface
+	public interface OnPersonnelSelectedListener {
+		public void onPersonnelSelected(int position);
+		public void enableDisableViewGroup();
+		public void enabledAddCat();
+		public void disableAddCat();
+	}
+	public void btnenableRegisterPersonnel(){
+		addPersonnel.setEnabled(true);
+		updatePersonnel.setEnabled(true);
+		deletePersonnel.setEnabled(true);
+	}
+	public void btndisableRegisterPersonnel(){
+		addPersonnel.setEnabled(false);
+		updatePersonnel.setEnabled(false);
+		deletePersonnel.setEnabled(false);
+	}
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle b) {
+		View view = inflater.inflate(R.layout.personnel_list,container, false);
+		
+		ListView listView = (ListView) view.findViewById(R.id.per_list);
+		btnlayout = (LinearLayout) view.findViewById(R.id.md_btnpersonnelview);
+		
+		btnlayout.setVisibility(LinearLayout.GONE);
+		updatePersonnel = (Button) view.findViewById(R.id.btnupdate);
+		deletePersonnel = (Button) view.findViewById(R.id.btndelete);
+		
+		//addPersonnel.setVisibility(Button.VISIBLE);
+		//-------------testing-----------------
+		final Cursor personnelCursor = getActivity().managedQuery(
+				PersonnelRegister.PRegistration.CONTENT_URI, null, null, null, null);
+		
+		mAdapter = new CustomAdapter(getActivity(),
+				   R.layout.personel_list_rows, personnelCursor,
+				   new String[] { PersonnelRegister.PRegistration.P_FNAME },
+				   new int[] { R.id.personel_name }); //personel_name
+		
+		listView.setAdapter(mAdapter);
+		
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// When clicked, send event to the host activity with the id of
+				// the category
+				int personnelIdColumnIndex = personnelCursor
+						.getColumnIndex(PersonnelRegister.PRegistration.REGISTRATION_ID);
+				int perId = personnelCursor.getInt(personnelIdColumnIndex);
+
+				mCallback.onPersonnelSelected(perId);			
+				//if (perId != 0){
+					
+				//}
+					
+			}
+		});
+				
+		addPersonnel = (Button) view.findViewById(R.id.add_personnel);		
+		addPersonnel.setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				add();
+				
+			}
+		});
+		
+		return view;
+				
+	}
+	private void add() {
+		FragmentManager fm = getFragmentManager();
+		if (fm.findFragmentByTag("dialog") == null) {
+
+			AddPersonnelFragment frag = AddPersonnelFragment
+					.newInstance();
+			
+			frag.show(fm, "dialog");
+			
+		}
+		
+	}
+	
+	private void modifyPersonnel(String strID, String fName, String pRoll, String PIN,
+								 String mNo, String eAddress){
+		
+		FragmentManager fm = getFragmentManager();
+		if (fm.findFragmentByTag("dialog") == null) {
+
+			ModifyPersonnelDetail frag = ModifyPersonnelDetail
+					.newInstance(strID, fName, pRoll, PIN, mNo, eAddress);
+			//frag.getLoaderManager();
+			frag.show(fm, "dialog");
+			
+		}
+	}
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+		try {
+			mCallback = (OnPersonnelSelectedListener) activity;
+			
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnpersonnelSelectedListener");
+		}
+	}
+	//--------------------------------------------------
+	public class CustomAdapter extends SimpleCursorAdapter  {
+		private final Context mContext;
+		private final int mLayout;
+		private final Cursor mCursor;
+		private final int mPersonnelNameIndex;
+		private final int mPersonnelRole;
+		private final int mIdIndex;
+		private final LayoutInflater mLayoutInflater;
+
+		private final class ViewHolder {
+			public TextView personnelName;
+			public CheckBox checkBox;
+		}
+
+		public CustomAdapter(Context context, int layout, Cursor c,
+				String[] from, int[] to) {
+			super(context, layout, c, from, to);
+
+			this.mContext = context;
+			this.mLayout = layout;
+			this.mCursor = c;
+			this.mPersonnelNameIndex = mCursor
+					.getColumnIndex(PersonnelRegister.PRegistration.P_FNAME); 
+			this.mPersonnelRole = mCursor
+					.getColumnIndex(PersonnelRegister.PRegistration.P_ROLE);
+			this.mIdIndex = mCursor
+					.getColumnIndex(PersonnelRegister.PRegistration.REGISTRATION_ID);
+			this.mLayoutInflater = LayoutInflater.from(mContext);
+		}
+
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if (mCursor.moveToPosition(position)) {
+				ViewHolder viewHolder;
+
+				if (convertView == null) {
+					convertView = mLayoutInflater.inflate(mLayout, null);
+
+					viewHolder = new ViewHolder();
+					viewHolder.personnelName = (TextView) convertView
+							.findViewById(R.id.personel_name);
+					viewHolder.checkBox = (CheckBox) convertView
+							.findViewById(R.id.checkBox);
+
+					convertView.setTag(viewHolder);
+				} else {
+					viewHolder = (ViewHolder) convertView.getTag();
+					
+				}
+
+				String perName = mCursor.getString(mPersonnelNameIndex);
+				String perRole = mCursor.getString(mPersonnelRole);
+				int perId = mCursor.getInt(mIdIndex);
+				
+				if (perId != 0){ mCallback.enableDisableViewGroup(); }
+				//else {mCallback.}
+				viewHolder.personnelName.setText(perName + "\n(" + perRole + ")");
+				viewHolder.personnelName.setTextColor(Color.BLUE);
+				viewHolder.checkBox.setChecked(false);
+				viewHolder.checkBox.setBackgroundColor(Color.DKGRAY);				
+				viewHolder.checkBox.setTag(perId);
+				viewHolder.checkBox
+						.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+							public void onCheckedChanged(CompoundButton cb,
+									boolean isChecked) {
+								if (cb.isChecked()) {
+									//if (mActionMode == null)
+										chosenId = (Integer) cb.getTag();
+									
+									btnlayout.setVisibility(LinearLayout.VISIBLE);								
+									addPersonnel.setVisibility(Button.GONE);
+									mCallback.disableAddCat();
+					//mActionMode = getActivity().startActionMode(mActionModeCallback);
+									boolean vSuccess, vSuccess1;
+									vSuccess = vSuccess1 = false;
+									vSuccess = updatePersonnel();
+									vSuccess1 = deletePersonnel();
+									if(vSuccess == true || vSuccess1 ==  true){
+										
+										mCallback.disableAddCat();
+										//btnlayout.setVisibility(LinearLayout.GONE);								
+										//addPersonnel.setVisibility(Button.VISIBLE);
+									}
+									
+								} else if (isChecked == false || chosenId <=0) {
+									// action
+									btnlayout.setVisibility(LinearLayout.GONE);								
+									addPersonnel.setVisibility(Button.VISIBLE);
+									mCallback.enabledAddCat();
+									if (mActionMode != null) {
+										mActionMode.finish();
+										mActionMode = null;
+									}
+								}
+							}
+						});
+			}
+			else if((mCursor.isNull(position))){
+				btnlayout.setVisibility(LinearLayout.GONE);								
+				addPersonnel.setVisibility(Button.VISIBLE);
+			}
+
+			return convertView;
+		}
+	}
+	//--------------------------------------------------
+	protected boolean updatePersonnel(){
+		updatePersonnel.setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				try{
+				String projection[]= new String[]{
+						PersonnelRegister.PRegistration._ID,
+						PersonnelRegister.PRegistration.P_FNAME,
+					    PersonnelRegister.PRegistration.P_ROLE,
+						PersonnelRegister.PRegistration.P_PIN,
+						PersonnelRegister.PRegistration.P_MNO,
+						PersonnelRegister.PRegistration.P_EMAIL
+				};
+				Cursor cr = getActivity().getContentResolver().query(PersonnelRegister.PRegistration.CONTENT_URI.buildUpon()
+						.appendPath(String.valueOf(chosenId)).build(),
+						projection, null, null, null);
+				
+				cr.moveToFirst();
+				String Id = (cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration._ID)));
+				String fname=(cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration.P_FNAME))); 
+				String pRoll=(cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration.P_ROLE)));
+				String pin=(cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration.P_PIN)));
+				String pmno=(cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration.P_MNO)));
+				String pemail=(cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration.P_EMAIL)));
+				
+				modifyPersonnel(Id, fname, pRoll, pin, pmno, pemail);							
+				}catch(Exception e){
+					return;
+				}
+				
+			}
+			
+		});
+		return true;
+		
+	}
+
+	protected boolean deletePersonnel(){
+		deletePersonnel.setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				getActivity().getContentResolver().delete(
+						PersonnelRegister.PRegistration.CONTENT_URI.buildUpon()
+								.appendPath(String.valueOf(chosenId)).build(),
+						null, null);
+				
+			}
+			
+		});
+		return true;
+		
+	}
+	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+		// Called when the action mode is created; startActionMode() was called
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			// Inflate a menu resource providing context menu items
+			MenuInflater inflater = mode.getMenuInflater();
+			inflater.inflate(R.menu.category_row_selected, menu);
+			return true;
+		}
+		
+		// Called each time the action mode is shown. Always called after
+		// onCreateActionMode, but
+		// may be called multiple times if the mode is invalidated.
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false; // Return false if nothing is done
+		}
+
+		// Called when the user selects a contextual menu item
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			switch (item.getItemId()) {
+			case R.id.menu_edit:
+				// edit Personnel				
+				String projection[]= new String[]{
+						PersonnelRegister.PRegistration._ID,
+						PersonnelRegister.PRegistration.P_FNAME,
+					    PersonnelRegister.PRegistration.P_ROLE,
+						PersonnelRegister.PRegistration.P_PIN,
+						PersonnelRegister.PRegistration.P_MNO,
+						PersonnelRegister.PRegistration.P_EMAIL
+				};
+				Cursor cr = getActivity().getContentResolver().query(PersonnelRegister.PRegistration.CONTENT_URI.buildUpon()
+						.appendPath(String.valueOf(chosenId)).build(),
+						projection, null, null, null);
+				
+				cr.moveToFirst();
+				String Id = (cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration._ID)));
+				String fname=(cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration.P_FNAME))); 
+				String pRoll=(cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration.P_ROLE)));
+				String pin=(cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration.P_PIN)));
+				String pmno=(cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration.P_MNO)));
+				String pemail=(cr.getString(cr.getColumnIndex(PersonnelRegister.PRegistration.P_EMAIL)));
+				
+				modifyPersonnel(Id, fname, pRoll, pin, pmno, pemail);							
+
+				mode.finish(); // Action picked, so close the CAB
+				return true;
+				
+			case R.id.menu_delete:
+				// delete personnel 
+				//Return the Activity this fragment is currently associated with
+				//Return a ContentResolver instance for your application's package.
+				getActivity().getContentResolver().delete(
+						PersonnelRegister.PRegistration.CONTENT_URI.buildUpon()
+								.appendPath(String.valueOf(chosenId)).build(),
+						null, null);
+				
+				mode.finish(); // Action picked, so close the CAB
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		// Called when the user exits the action mode
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			mActionMode = null;
+		}
+	};
+	
+	
+}

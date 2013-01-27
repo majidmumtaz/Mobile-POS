@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"       
+    android:padding="5dp"    
+    android:background="@drawable/list_selector"
+    android:gravity="top|left"
+    >
+    
+   <!--  <CheckBox android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical" />
+     -->
+     <LinearLayout
+	    android:id="@+id/thumbnail_image"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"	    
+	    android:layout_marginRight="5dip"
+	    android:layout_alignParentLeft="true"
+	    android:background="@drawable/image_bg"
+	    android:padding="3dip" >
+        
+		<ImageView     
+			android:id="@+id/list_catimage"   
+	        android:layout_width="35dip"
+	        android:layout_height="35dip"
+	        android:src="@drawable/categories_food"
+	        android:contentDescription="personnel thumbnail"
+	        android:focusable="false"
+	        android:clickable="false"
+	        />
+        
+	</LinearLayout>
+    <TextView
+        android:id="@+id/category_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/thumbnail_image"
+        android:layout_toRightOf="@+id/thumbnail_image"        
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="20dip"
+        android:textStyle="bold"
+         />
+
+</RelativeLayout>

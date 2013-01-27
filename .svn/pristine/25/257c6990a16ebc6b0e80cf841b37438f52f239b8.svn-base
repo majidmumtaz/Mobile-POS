@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_background"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/personnelText"
+            style="@style/TitleText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/personnel" />
+
+        <ListView
+            android:id="@+id/per_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:choiceMode="singleChoice" >
+        </ListView>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/add_personnel"
+        style="@style/ButtonText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="5dp"
+        android:text="@string/add_personnel" />
+    <LinearLayout
+        android:id="@+id/md_btnpersonnelview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        
+         >
+
+        <Button
+            android:id="@+id/btnupdate"
+            style="@style/ButtonText"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:text="@string/menu_edit"
+            
+             />
+
+        <Button
+            android:id="@+id/btndelete"
+            style="@style/ButtonText"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:text="@string/menu_delete" 
+            
+            />
+    </LinearLayout>
+
+</LinearLayout>

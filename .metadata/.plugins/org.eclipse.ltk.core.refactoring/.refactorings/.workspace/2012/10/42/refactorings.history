@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;MPosAdmin&apos;" deleteContents="false" description="Delete resource &apos;MPosAdmin&apos;" element1="/MPosAdmin" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1350174029898"/>&#x0A;<refactoring comment="Delete resource &apos;MPosAdministrator&apos;" deleteContents="true" description="Delete resource &apos;MPosAdministrator&apos;" element1="/MPosAdministrator" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1350462599861"/>
+</session>

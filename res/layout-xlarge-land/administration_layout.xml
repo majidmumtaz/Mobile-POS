@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/admin_main_container"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffcccccc"
+    android:orientation="horizontal" >
+   
+  <fragment android:name="com.setecs.android.mpos.fragments.InventoryCategoryFragment"
+        android:id="@+id/category"
+        android:layout_width="0dip"
+        android:layout_height="match_parent" 
+        android:layout_weight="2"
+        android:layout_margin="10dip" />
+  <fragment android:name="com.setecs.android.mpos.fragments.InventoryMenuItemsFragment"
+      android:id="@+id/menuitems"
+      android:layout_width="0dip" 
+      android:layout_weight="3"
+      android:layout_height="match_parent"
+      android:layout_margin="10dip" />   
+  <fragment android:name="com.setecs.android.mpos.fragments.PersonnelListFragment"
+        android:id="@+id/personel"
+        android:layout_width="0dip"
+        android:layout_height="match_parent" 
+        android:layout_weight="2"
+        android:layout_margin="10dip" />
+  
+</LinearLayout>

@@ -1,0 +1,15 @@
+package com.setecs.android.mpos.fragments;
+
+import android.app.DialogFragment;
+
+	public class ModifyMenuItemDialogFragment extends DialogFragment {
+
+	private int menuCatId;
+	public static ModifyMenuItemDialogFragment newInstance() {
+		ModifyMenuItemDialogFragment frag = new ModifyMenuItemDialogFragment();
+		
+		return frag;
+		
+	}
+
+}
